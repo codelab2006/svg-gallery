@@ -1,0 +1,79 @@
+{
+  "name": "svg-gallery",
+  "displayName": "SVG Gallery",
+  "description": "",
+  "version": "0.0.1",
+  "publisher": "",
+  "icon": "",
+  "engines": {
+    "vscode": "^1.43.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "icon",
+    "svg",
+    "viewer"
+  ],
+  "galleryBanner": {
+    "color": "#37699A",
+    "theme": "dark"
+  },
+  "activationEvents": [
+    "*"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "SVGGallery.open",
+        "title": "Open in SVG Gallery",
+        "category": "File"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "SVGGallery.open",
+          "when": "explorerResourceIsFolder"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "SVGGallery.open",
+          "when": "explorerResourceIsFolder",
+          "group": "SVGGallery@1"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "lint": "eslint src --ext ts",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/node": "^12.12.0",
+    "@types/vscode": "^1.43.0",
+    "eslint": "^6.8.0",
+    "@typescript-eslint/parser": "^2.18.0",
+    "@typescript-eslint/eslint-plugin": "^2.18.0",
+    "typescript": "^3.7.5"
+  },
+  "dependencies": {
+    "ejs": "^3.0.2",
+    "lodash": "^4.17.15"
+  },
+  "author": "Yongjian Huang",
+  "license": "MIT",
+  "homepage": "https://github.com/codelab2006/svg-gallery#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/codelab2006/svg-gallery.git"
+  },
+  "bugs": {
+    "url": "https://github.com/codelab2006/svg-gallery/issues"
+  }
+}
