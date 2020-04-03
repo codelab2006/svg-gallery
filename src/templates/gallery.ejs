@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>SVG Gallery</title>
+    <%- style %>
+  </head>
+  <body>
+    <ul>
+      <%_ sections.forEach((e) => { _%>
+      <li>
+        <%- e %>
+      </li>
+      <%_ }) _%>
+    </ul>
+  </body>
+</html>

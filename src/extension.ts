@@ -1,11 +1,10 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import { parse, extname, join, basename } from 'path';
 import { readdirSync, Dirent } from 'fs';
 
-import sectionTpl from './templates/section';
-import galleryTpl from './templates/gallery';
+import style from './style.css';
+import sectionTpl from './templates/section.ejs';
+import galleryTpl from './templates/gallery.ejs';
 
 const ejs = require('ejs');
 
@@ -59,25 +58,21 @@ class Gallery {
 
   generateHtml(): string {
     return ejs.render(this.tpl, {
+      style: `<style>${style}</style>`,
       sections: this.sections.map(e => e.generateHtml())
     });
   }
 }
 
 // this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-  const webviewPanels: Map<string, vscode.WebviewPanel> = new Map();
 
-  // Use the console to output diagnostic information (console.log) and errors (console.error)
-  // This line of code will only be executed once when your extension is activated
   console.log('Congratulations, your extension "SVG Gallery" is now active!');
 
-  // The command has been defined in the package.json file
-  // Now provide the implementation of the command with registerCommand
-  // The commandId parameter must match the command field in package.json
+  const webviewPanels: Map<string, vscode.WebviewPanel> = new Map();
+
   let disposable = vscode.commands.registerCommand('SVGGallery.open', (folder: any, folders: any[]) => {
-    // The code you place here will be executed every time your command is executed
+
     const selectedFolders: any[] = folders.length ? folders : [folder];
 
     selectedFolders.forEach((v: any) => {

@@ -9,11 +9,14 @@
     "@typescript-eslint"
   ],
   "rules": {
-    "@typescript-eslint/class-name-casing": "warn",
-    "@typescript-eslint/semi": "warn",
-    "curly": "warn",
-    "eqeqeq": "warn",
-    "no-throw-literal": "warn",
+    "@typescript-eslint/class-name-casing": "error",
+    "@typescript-eslint/semi": "error",
+    "curly": "error",
+    "eqeqeq": "error",
+    "no-throw-literal": "error",
+    "comma-dangle": "error",
+    "comma-spacing": "error",
+    "comma-style": "error",
     "semi": "off"
   }
 }
