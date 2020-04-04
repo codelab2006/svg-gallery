@@ -1,18 +1,22 @@
 <div>
   <h1 class="path"><%= path %></h1>
-  <ul class="item-container">
-    <%_ files.forEach((e) => { _%>
-    <li class="item">
-      <div class="img-container">
-        <img class="image" src="<%= e.uri %>" />
-      </div>
-      <input
-        class="name"
-        title="<%= e.basename %>"
-        value="<%= e.basename %>"
-        readonly="readonly"
-      />
-    </li>
-    <%_ }) _%>
-  </ul>
+  <div class="container-fluid">
+    <ul class="row">
+      <%_ files.forEach((e) => { _%>
+      <li class="col-12 col-sm-2 col-xl-1 item">
+        <div class="img-container d-flex-column-center">
+          <div class="img-window d-flex-column-center">
+            <img class="image" src="<%= e.uri %>" />
+          </div>
+        </div>
+        <input
+          class="name"
+          title="<%= e.basename %>"
+          value="<%= e.basename %>"
+          readonly="readonly"
+        />
+      </li>
+      <%_ }) _%>
+    </ul>
+  </div>
 </div>

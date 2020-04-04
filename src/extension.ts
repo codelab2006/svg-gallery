@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import { parse, extname, join, basename } from 'path';
 import { readdirSync, Dirent } from 'fs';
 
+import grid from './bootstrap-grid.min.css';
 import style from './style.css';
 import sectionTpl from './templates/section.ejs';
 import galleryTpl from './templates/gallery.ejs';
@@ -58,7 +59,7 @@ class Gallery {
 
   generateHtml(): string {
     return ejs.render(this.tpl, {
-      style: `<style>${style}</style>`,
+      style: `<style>${grid}${style}</style>`,
       sections: this.sections.map(e => e.generateHtml())
     });
   }
