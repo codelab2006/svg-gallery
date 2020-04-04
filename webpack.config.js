@@ -1,4 +1,4 @@
-const path = require('path');
+const { resolve } = require('path');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
@@ -9,7 +9,7 @@ module.exports = {
     new CleanWebpackPlugin()
   ],
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: resolve(__dirname, 'dist'),
     filename: 'extension.js',
     libraryTarget: 'commonjs2',
     devtoolModuleFilenameTemplate: "../[resource-path]"
