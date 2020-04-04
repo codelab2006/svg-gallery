@@ -42,6 +42,9 @@
   background-color: transparent;
   color: var(--vscode-editor-foreground);
 }
+.name:focus {
+  outline: none;
+}
 .gallery-container {
   display: flex;
   flex-wrap: wrap;
