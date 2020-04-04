@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { parse, extname, join, basename } from 'path';
+import { parse, extname, join, basename, ParsedPath, format, normalize } from 'path';
 import { readdirSync, Dirent } from 'fs';
 
 import grid from './bootstrap-grid.min.css';
@@ -38,8 +38,9 @@ class Section {
     private files: string[]) { }
 
   generateHtml(): string {
+    const o: ParsedPath = parse(this.path);
     return ejs.render(this.tpl, {
-      path: this.path,
+      path: normalize(join(o.root.toUpperCase(), o.dir.replace(o.root, ''), o.base)),
       files: this.files.map(e => new File(this.webview, e))
     });
   }
