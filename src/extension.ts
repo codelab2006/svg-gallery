@@ -86,7 +86,7 @@ export function activate(context: vscode.ExtensionContext) {
           path,
           `${parse(v.path).name} - SVG Gallery`,
           vscode.ViewColumn.One,
-          { enableScripts: true }
+          { enableScripts: true, enableFindWidget: true }
         );
         webViewPanel.onDidDispose(() => webviewPanels.delete(path));
         webviewPanels.set(path, webViewPanel);

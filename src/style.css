@@ -45,7 +45,7 @@
 .gallery-container {
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-end;
+  justify-content: center;
 }
 .gallery {
   width: 100%;
@@ -95,16 +95,4 @@ input[type="radio"]#light-window:checked ~ .gallery .img-container {
 }
 input[type="radio"]#dark-window:checked ~ .gallery .img-container {
   background-color: #000000;
-}
-#search {
-  flex-grow: 1;
-  display: flex;
-  margin: 5px;
-  align-items: center;
-}
-#search-input {
-  height: 100%;
-  padding: 0 5px;
-  flex-grow: 1;
-  border-radius: 10px;
 }
