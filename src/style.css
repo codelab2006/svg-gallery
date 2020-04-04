@@ -23,7 +23,7 @@
   justify-content: center;
 }
 .img-container {
-  background-color: #ffffff;
+  background-color: transparent;
   padding: 2px;
   border: 1px solid;
 }
@@ -52,6 +52,9 @@
 .section {
   margin-bottom: 16px;
 }
+.section-box {
+  margin-top: 2px;
+}
 .state {
   display: none;
 }
@@ -65,6 +68,7 @@
   border-radius: 10px;
   display: block;
   text-align: center;
+  border: 1px solid var(--vscode-editor-foreground);
 }
 .light-window-label {
   color: #000000;
@@ -76,12 +80,18 @@
 }
 .flag {
   position: absolute;
-  top: 5px;
-  left: 6px;
+  top: 6px;
+  left: 8px;
   border-radius: 10px;
   border: 6px solid;
   border-color: transparent;
 }
 input[type="radio"]:checked + .window-label-container .flag {
   border: 6px solid #a076c4;
+}
+input[type="radio"]#light-window:checked ~ .gallery .img-container {
+  background-color: #ffffff;
+}
+input[type="radio"]#dark-window:checked ~ .gallery .img-container {
+  background-color: #000000;
 }
