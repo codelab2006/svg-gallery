@@ -5,15 +5,33 @@
     <title>SVG Gallery</title>
     <%- style %>
   </head>
-  <body class="gallery-container">
-    <input class="state" type="radio" id="light-window" name="main-window" checked />
-    <label class="window-label light-window-label" for="light-window">Light Window</label>
-    <label class="window-label dark-window-label" for="dark-window">Dark Window</label>
-    <input class="state" type="radio" id="dark-window" name="main-window" />
-    <ul class="gallery">
-      <%_ sections.forEach((e) => { _%>
-      <li><%- e %></li>
-      <%_ }) _%>
-    </ul>
+  <body>
+    <div class="gallery-container">
+      <input
+        class="state"
+        type="radio"
+        id="light-window"
+        name="main-window"
+        checked
+      />
+      <div class="window-label-container">
+        <label class="window-label light-window-label" for="light-window"
+          >Light Window</label
+        >
+        <div class="flag"></div>
+      </div>
+      <input class="state" type="radio" id="dark-window" name="main-window" />
+      <div class="window-label-container">
+        <label class="window-label dark-window-label" for="dark-window"
+          >Dark Window</label
+        >
+        <div class="flag"></div>
+      </div>
+      <ul class="gallery">
+        <%_ sections.forEach((e) => { _%>
+        <li><%- e %></li>
+        <%_ }) _%>
+      </ul>
+    </div>
   </body>
 </html>
