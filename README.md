@@ -14,6 +14,10 @@ View SVG images in gallery.
 
 ## Change Log
 
+### 1.2.1
+
+- Updated features gif.
+
 ### 1.2.0
 
 - Updated logo.
