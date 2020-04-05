@@ -1,16 +1,21 @@
 <div class="section">
-  <h1 class="path"><%= path %></h1>
+  <input
+    class="input-text outline-none"
+    title="<%= path %>"
+    value="<%= path %>"
+    readonly="readonly"
+  />
   <div class="section-box container-fluid">
     <ul class="row">
       <%_ files.forEach((e) => { _%>
-      <li class="col-12 col-sm-2 col-xl-1 item">
-        <div class="img-container d-flex-column-center">
+      <li class="col-12 col-sm-2 col-xl-1 padding-4">
+        <div class="img-container bc-transparent padding-2 d-flex-column-center">
           <div class="img-window d-flex-column-center">
-            <img class="image" src="<%= e.uri %>" />
+            <img class="d-block"" src="<%= e.uri %>" />
           </div>
         </div>
         <input
-          class="name"
+          class="input-text text-align-center outline-none"
           title="<%= e.basename %>"
           value="<%= e.basename %>"
           readonly="readonly"
