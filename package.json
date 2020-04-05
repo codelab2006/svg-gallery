@@ -4,7 +4,7 @@
   "description": "",
   "version": "0.0.1",
   "publisher": "",
-  "icon": "",
+  "icon": "images/logo.png",
   "engines": {
     "vscode": "^1.43.0"
   },
