@@ -14,6 +14,10 @@ View SVG images in gallery.
 
 ## Change Log
 
+### 1.2.0
+
+- Updated logo.
+
 ### 1.1.0
 
 - Updated image frame background color.
