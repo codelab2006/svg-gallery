@@ -1,9 +1,9 @@
 {
   "name": "svg-gallery",
   "displayName": "SVG Gallery",
-  "description": "",
+  "description": "View SVG images in gallery",
   "version": "0.0.1",
-  "publisher": "",
+  "publisher": "developer2006",
   "icon": "images/logo.png",
   "engines": {
     "vscode": "^1.43.0"
