@@ -8,3 +8,4 @@ src/**
 **/*.ts
 **/webpack.config.js
 .gitignore
+logo.svg
