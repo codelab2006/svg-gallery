@@ -2,7 +2,7 @@
   "name": "svg-gallery",
   "displayName": "SVG Gallery",
   "description": "View SVG images in gallery",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "publisher": "developer2006",
   "icon": "images/logo.png",
   "engines": {
