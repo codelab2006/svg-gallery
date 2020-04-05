@@ -1,3 +1,7 @@
+:root {
+  --light-color: #f2f2f2;
+  --dark-color: #262626;
+}
 * {
   margin: 0;
   padding: 0;
@@ -24,7 +28,6 @@
 .img-container {
   background-color: transparent;
   padding: 2px;
-  border: 1px solid;
 }
 .img-window {
   width: 64px;
@@ -75,12 +78,12 @@
   border: 1px solid var(--vscode-editor-foreground);
 }
 .light-window-label {
-  color: #000000;
-  background-color: #ffffff;
+  color: var(--dark-color);
+  background-color: var(--light-color);
 }
 .dark-window-label {
-  color: #ffffff;
-  background-color: #000000;
+  color: var(--light-color);
+  background-color: var(--dark-color);
 }
 .flag {
   position: absolute;
@@ -94,8 +97,8 @@ input[type="radio"]:checked + .window-label-container .flag {
   border: 6px solid #a076c4;
 }
 input[type="radio"]#light-window:checked ~ .gallery .img-container {
-  background-color: #ffffff;
+  background-color: var(--light-color);
 }
 input[type="radio"]#dark-window:checked ~ .gallery .img-container {
-  background-color: #000000;
+  background-color: var(--dark-color);
 }
