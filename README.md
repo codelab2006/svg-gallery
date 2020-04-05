@@ -4,6 +4,8 @@ View SVG images in gallery.
 
 ## Features
 
+![Image](https://raw.githubusercontent.com/codelab2006/svg-gallery/master/images/features.gif)
+
 ## Install
 
 [How to install Visual Studio Code extensions](https://code.visualstudio.com/docs/editor/extension-gallery)
