@@ -7,14 +7,14 @@
   </head>
   <body>
     <div class="gallery-container">
-      <input class="d-none" type="radio" id="light-window" name="image-window" checked />
-      <div class="window-label-container">
-        <button id="light-window-label" class="window-label">Light Window</button>
+      <input class="d-none" type="radio" id="light-frame" name="image-frame" checked />
+      <div class="frame-label-container">
+        <button id="light-frame-label" class="frame-label">Light</button>
         <div class="flag"></div>
       </div>
-      <input class="d-none" type="radio" id="dark-window" name="image-window" />
-      <div class="window-label-container">
-        <button id="dark-window-label" class="window-label">Dark Window</button>
+      <input class="d-none" type="radio" id="dark-frame" name="image-frame" />
+      <div class="frame-label-container">
+        <button id="dark-frame-label" class="frame-label">Dark</button>
         <div class="flag"></div>
       </div>
       <ul class="gallery">
@@ -24,8 +24,8 @@
       </ul>
     </div>
     <script>
-      document.querySelector('#light-window-label').onclick = () => document.querySelector('#light-window').click();
-      document.querySelector('#dark-window-label').onclick = () => document.querySelector('#dark-window').click();
+      document.querySelector('#light-frame-label').onclick = () => document.querySelector('#light-frame').click();
+      document.querySelector('#dark-frame-label').onclick = () => document.querySelector('#dark-frame').click();
     </script>
   </body>
 </html>

@@ -14,11 +14,11 @@ View SVG images in gallery.
 
 ## Change Log
 
-### 1.0.1
+### 1.1.0
 
-- Updated image window background color.
+- Updated image frame background color.
 
 ### 1.0.0
 
 - Added "Open in SVG Gallery" menu item to explorer context menu.
-- Added "Light Window" and "Dark Window".
+- Added "Light" and "Dark".

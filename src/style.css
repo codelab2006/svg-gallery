@@ -37,7 +37,7 @@
   align-items: center;
   justify-content: center;
 }
-.img-window {
+.img-frame {
   width: 64px;
   height: 64px;
 }
@@ -61,22 +61,22 @@
 .d-none {
   display: none;
 }
-.window-label-container {
+.frame-label-container {
   margin: 5px;
   position: relative;
 }
-.window-label {
+.frame-label {
   display: block;
   border: 1px solid var(--vscode-editor-foreground);
   width: 150px;
   padding: 2px 10px;
   border-radius: 10px;
 }
-#light-window-label {
+#light-frame-label {
   color: var(--dark-color);
   background-color: var(--light-color);
 }
-#dark-window-label {
+#dark-frame-label {
   color: var(--light-color);
   background-color: var(--dark-color);
 }
@@ -88,12 +88,12 @@
   border: 5px solid;
   border-color: transparent;
 }
-input[type="radio"]:checked + .window-label-container .flag {
+input[type="radio"]:checked + .frame-label-container .flag {
   border-color: #a076c4;
 }
-input[type="radio"]#light-window:checked ~ .gallery .img-container {
+input[type="radio"]#light-frame:checked ~ .gallery .img-container {
   background-color: var(--light-color);
 }
-input[type="radio"]#dark-window:checked ~ .gallery .img-container {
+input[type="radio"]#dark-frame:checked ~ .gallery .img-container {
   background-color: var(--dark-color);
 }
