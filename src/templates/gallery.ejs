@@ -7,20 +7,14 @@
   </head>
   <body>
     <div class="gallery-container">
-      <input
-        class="d-none"
-        type="radio"
-        id="light-window"
-        name="main-window"
-        checked
-      />
+      <input class="d-none" type="radio" id="light-window" name="image-window" checked />
       <div class="window-label-container">
-        <label class="window-label light-window-label" for="light-window">Light Window</label>
+        <button id="light-window-label" class="window-label">Light Window</button>
         <div class="flag"></div>
       </div>
-      <input class="d-none" type="radio" id="dark-window" name="main-window" />
+      <input class="d-none" type="radio" id="dark-window" name="image-window" />
       <div class="window-label-container">
-        <label class="window-label dark-window-label" for="dark-window">Dark Window</label>
+        <button id="dark-window-label" class="window-label">Dark Window</button>
         <div class="flag"></div>
       </div>
       <ul class="gallery">
@@ -29,5 +23,9 @@
         <%_ }) _%>
       </ul>
     </div>
+    <script>
+      document.querySelector('#light-window-label').onclick = () => document.querySelector('#light-window').click();
+      document.querySelector('#dark-window-label').onclick = () => document.querySelector('#dark-window').click();
+    </script>
   </body>
 </html>

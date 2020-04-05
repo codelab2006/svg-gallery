@@ -66,18 +66,17 @@
   position: relative;
 }
 .window-label {
+  display: block;
+  border: 1px solid var(--vscode-editor-foreground);
   width: 150px;
   padding: 2px 10px;
   border-radius: 10px;
-  display: block;
-  text-align: center;
-  border: 1px solid var(--vscode-editor-foreground);
 }
-.light-window-label {
+#light-window-label {
   color: var(--dark-color);
   background-color: var(--light-color);
 }
-.dark-window-label {
+#dark-window-label {
   color: var(--light-color);
   background-color: var(--dark-color);
 }
@@ -86,11 +85,11 @@
   top: 6px;
   left: 8px;
   border-radius: 10px;
-  border: 6px solid;
+  border: 5px solid;
   border-color: transparent;
 }
 input[type="radio"]:checked + .window-label-container .flag {
-  border: 6px solid #a076c4;
+  border-color: #a076c4;
 }
 input[type="radio"]#light-window:checked ~ .gallery .img-container {
   background-color: var(--light-color);
