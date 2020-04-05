@@ -1,7 +1,10 @@
+node_modules
 .vscode/**
 src/**
-.gitignore
 **/tsconfig.json
 **/.eslintrc.json
+**/.editorconfig
 **/*.map
 **/*.ts
+**/webpack.config.js
+.gitignore
