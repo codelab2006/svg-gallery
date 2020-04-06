@@ -8,12 +8,16 @@
   box-sizing: border-box;
   list-style: none;
 }
+.w-h {
+  font-size: xx-small;
+  display: block;
+  text-align: end;
+}
 .input-text {
   width: 100%;
   padding: 2px;
   cursor: auto;
   border: none;
-  background-color: transparent;
   color: var(--vscode-editor-foreground);
 }
 .text-align-center {

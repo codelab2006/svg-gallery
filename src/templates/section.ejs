@@ -1,6 +1,6 @@
 <div class="section">
   <input
-    class="input-text outline-none"
+    class="input-text bc-transparent outline-none"
     title="<%= path %>"
     value="<%= path %>"
     readonly="readonly"
@@ -14,8 +14,11 @@
             <img class="d-block"" src="<%= e.uri %>" />
           </div>
         </div>
+        <% if (e.svgWH) { %>
+        <span class="w-h">W:<%= e.svgWH.width + e.svgWH.widthUnits %>, H:<%= e.svgWH.height + e.svgWH.heightUnits %></span>
+        <% } %>
         <input
-          class="input-text text-align-center outline-none"
+          class="input-text bc-transparent text-align-center outline-none"
           title="<%= e.basename %>"
           value="<%= e.basename %>"
           readonly="readonly"
