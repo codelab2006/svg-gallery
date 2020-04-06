@@ -14,6 +14,10 @@ View SVG images in gallery.
 
 ## Change Log
 
+### 1.2.2
+
+- Added width and height information.
+
 ### 1.2.1
 
 - Updated features gif.
