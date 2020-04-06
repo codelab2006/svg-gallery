@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { parse, extname, join, basename, ParsedPath, format, normalize } from 'path';
+import { parse, extname, join, basename } from 'path';
 import { readdirSync, Dirent } from 'fs';
 
 import Gallery from './Gallery';
