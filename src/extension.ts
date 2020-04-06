@@ -2,69 +2,10 @@ import * as vscode from 'vscode';
 import { parse, extname, join, basename, ParsedPath, format, normalize } from 'path';
 import { readdirSync, Dirent } from 'fs';
 
-import grid from './bootstrap-grid.min.css';
-import style from './style.css';
-import sectionTpl from './templates/section.ejs';
+import Gallery from './Gallery';
+import { EXT_SVG, EXCLUDE } from './constant';
+
 import galleryTpl from './templates/gallery.ejs';
-
-const ejs = require('ejs');
-
-const EXT_SVG: string = '.svg';
-const EXCLUDE: Set<string> = new Set([
-  'node_modules'
-]);
-
-class File {
-
-  public basename: string | undefined;
-  public uri: vscode.Uri | undefined;
-
-  constructor(private webview: vscode.Webview, public path: string) {
-    this.basename = basename(path);
-    this.uri = this.toUri(path);
-  }
-
-  private toUri(s: string): vscode.Uri {
-    return this.webview.asWebviewUri(vscode.Uri.file(s));
-  }
-}
-
-class Section {
-
-  constructor(
-    private webview: vscode.Webview,
-    private tpl: string,
-    private path: string,
-    private files: string[]) { }
-
-  generateHtml(): string {
-    const o: ParsedPath = parse(this.path);
-    return ejs.render(this.tpl, {
-      path: normalize(join(o.root.toUpperCase(), o.dir.replace(o.root, ''), o.base)),
-      files: this.files.map(e => new File(this.webview, e))
-    });
-  }
-}
-
-class Gallery {
-
-  private sections: Section[] = [];
-
-  constructor(
-    private context: vscode.ExtensionContext,
-    private webview: vscode.Webview,
-    private tpl: string,
-    private map: Map<string, string[]>) {
-    map.forEach((v: string[], k: string) => this.sections.push(new Section(webview, sectionTpl, k, v)));
-  }
-
-  generateHtml(): string {
-    return ejs.render(this.tpl, {
-      style: `<style>${grid}${style}</style>`,
-      sections: this.sections.map(e => e.generateHtml())
-    });
-  }
-}
 
 // this method is called when your extension is activated
 export function activate(context: vscode.ExtensionContext) {
