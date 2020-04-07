@@ -51,14 +51,23 @@
 .d-block {
   display: block;
 }
-.d-none {
-  display: none;
+.p-relative {
+  position: relative;
+}
+.p-absolute {
+  position: absolute;
+}
+.t-0-r-0-b-0-l-0 {
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
 }
 .w-64-h-64 {
   width: 64px;
   height: 64px;
 }
-.gallery-container {
+#gallery-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -68,7 +77,6 @@
 }
 .frame-label-container {
   margin: 5px;
-  position: relative;
 }
 .frame-label {
   display: block;
@@ -101,4 +109,15 @@ input[type="radio"]#light-frame:checked ~ .gallery .img-container {
 }
 input[type="radio"]#dark-frame:checked ~ .gallery .img-container {
   background-color: var(--dark-color);
+}
+.svg-container:hover > .action {
+  display: flex !important;
+}
+.action > button.open {
+  cursor: pointer;
+  font-size: small;
+  padding: 5px;
+  border: none;
+  color: var(--vscode-button-foreground);
+  background-color: var(--vscode-button-background);
 }

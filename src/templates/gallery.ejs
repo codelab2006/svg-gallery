@@ -6,14 +6,14 @@
     <%- style %>
   </head>
   <body>
-    <div class="gallery-container">
+    <div id="gallery-container">
       <input class="d-none" type="radio" id="light-frame" name="image-frame" checked />
-      <div class="frame-label-container">
+      <div class="p-relative frame-label-container">
         <button id="light-frame-label" class="frame-label">Light</button>
         <div class="flag"></div>
       </div>
       <input class="d-none" type="radio" id="dark-frame" name="image-frame" />
-      <div class="frame-label-container">
+      <div class="p-relative  frame-label-container">
         <button id="dark-frame-label" class="frame-label">Dark</button>
         <div class="flag"></div>
       </div>
@@ -24,8 +24,12 @@
       </ul>
     </div>
     <script>
+      const vscode = acquireVsCodeApi();
       document.querySelector('#light-frame-label').onclick = () => document.querySelector('#light-frame').click();
       document.querySelector('#dark-frame-label').onclick = () => document.querySelector('#dark-frame').click();
+      document.querySelector('#gallery-container').onclick = ({ target: { dataset: { path } } }) => {
+        if (path) { vscode.postMessage({ command: 'OPEN_FILE', args: { path: path } }); }
+      };
     </script>
   </body>
 </html>

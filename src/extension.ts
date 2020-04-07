@@ -14,7 +14,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   const webviewPanels: Map<string, vscode.WebviewPanel> = new Map();
 
-  let disposable = vscode.commands.registerCommand('SVGGallery.open', (folder: any, folders: any[]) => {
+  context.subscriptions.push(vscode.commands.registerCommand('SVGGallery.open', (folder: any, folders: any[]) => {
 
     const selectedFolders: any[] = folders.length ? folders : [folder];
 
@@ -30,6 +30,14 @@ export function activate(context: vscode.ExtensionContext) {
           { enableScripts: true, enableFindWidget: true }
         );
         webViewPanel.onDidDispose(() => webviewPanels.delete(path));
+        context.subscriptions.push(webViewPanel.webview.onDidReceiveMessage(({ command, args }: { command: string, args: any }) => {
+          switch (command) {
+            case 'OPEN_FILE':
+              const { path }: { path: string } = args;
+              if (path) { vscode.window.showTextDocument(vscode.Uri.file(path)); }
+              return;
+          }
+        }));
         webviewPanels.set(path, webViewPanel);
       } else {
         webViewPanel.reveal();
@@ -38,9 +46,7 @@ export function activate(context: vscode.ExtensionContext) {
       const gallery: Gallery = buildGallery(path, webViewPanel.webview);
       webViewPanel.webview.html = gallery.generateHtml();
     });
-  });
-
-  context.subscriptions.push(disposable);
+  }));
 }
 
 function buildGallery(path: string, webview: vscode.Webview): Gallery {
