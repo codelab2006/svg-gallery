@@ -69,6 +69,7 @@
   },
   "dependencies": {
     "ejs": "^3.0.2",
+    "fast-xml-parser": "^3.16.0",
     "lodash": "^4.17.15"
   },
   "author": "Yongjian Huang",
