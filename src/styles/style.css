@@ -8,6 +8,12 @@
   box-sizing: border-box;
   list-style: none;
 }
+.fs-xx-small {
+  font-size: xx-small;
+}
+.ta-right {
+  text-align: right;
+}
 .input-text {
   width: 100%;
   padding: 2px;

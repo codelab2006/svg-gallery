@@ -35,7 +35,7 @@ export function activate(context: vscode.ExtensionContext) {
         webViewPanel.reveal();
       }
 
-      const gallery: Gallery = buildGallery(path, context, webViewPanel.webview);
+      const gallery: Gallery = buildGallery(path, webViewPanel.webview);
       webViewPanel.webview.html = gallery.generateHtml();
     });
   });
@@ -43,7 +43,7 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(disposable);
 }
 
-function buildGallery(path: string, context: vscode.ExtensionContext, webview: vscode.Webview): Gallery {
+function buildGallery(path: string, webview: vscode.Webview): Gallery {
   return new Gallery(webview, galleryTpl, findFilesByExt(path, EXT_SVG));
 }
 
