@@ -1,26 +1,27 @@
 import * as vscode from 'vscode';
 import { basename } from 'path';
 import { readFileSync } from 'fs';
+import { ENCODING } from './constant';
 
-const parser = require('fast-xml-parser');
+const fastXmlParser = require('fast-xml-parser');
 
 export default class File {
 
   public basename: string | undefined;
   public uri: vscode.Uri | undefined;
-  public width: string = 'n/a';
-  public height: string = 'n/a';
+  public width: string = '';
+  public height: string = '';
 
   constructor(private webview: vscode.Webview, public path: string) {
-    this.basename = basename(path);
     this.uri = this.webview.asWebviewUri(vscode.Uri.file(path));
-    const data: Buffer = readFileSync(path);
-    let contents: string = '';
-    for (const code of data) { contents += String.fromCharCode(code); }
-    if (parser.validate(contents) === true) {
-      const { svg: { width, height } } = parser.parse(contents, { attributeNamePrefix: '', ignoreAttributes: false });
-      if (width) { this.width = width; }
-      if (height) { this.height = height; }
+    const contents: String = readFileSync(path, { encoding: ENCODING });
+    if (fastXmlParser.validate(contents) === true) {
+      const o = fastXmlParser.parse(contents, { attributeNamePrefix: '', ignoreAttributes: false });
+      const { svg: { width, height } } = o;
+      if (width) { this.width = `W:${width}`; }
+      if (height) { this.height = `H:${height}`; }
+      // new fastXmlParser.j2xParser();
     }
+    this.basename = basename(path);
   }
 }
