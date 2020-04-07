@@ -13,7 +13,6 @@ export default class Gallery {
   private sections: Section[] = [];
 
   constructor(
-    private context: vscode.ExtensionContext,
     private webview: vscode.Webview,
     private tpl: string,
     private map: Map<string, string[]>) {

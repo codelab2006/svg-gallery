@@ -8,10 +8,6 @@ export default class File {
 
   constructor(private webview: vscode.Webview, public path: string) {
     this.basename = basename(path);
-    this.uri = this.toUri(path);
-  }
-
-  private toUri(s: string): vscode.Uri {
-    return this.webview.asWebviewUri(vscode.Uri.file(s));
+    this.uri = this.webview.asWebviewUri(vscode.Uri.file(path));
   }
 }

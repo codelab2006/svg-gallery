@@ -44,7 +44,7 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 function buildGallery(path: string, context: vscode.ExtensionContext, webview: vscode.Webview): Gallery {
-  return new Gallery(context, webview, galleryTpl, findFilesByExt(path, EXT_SVG));
+  return new Gallery(webview, galleryTpl, findFilesByExt(path, EXT_SVG));
 }
 
 function findFilesByExt(path: string, ext: string): Map<string, string[]> {
