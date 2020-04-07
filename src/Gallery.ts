@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
 import Section from "./Section";
 
-import grid from './bootstrap-grid.min.css';
-import style from './style.css';
+import grid from './styles/bootstrap-grid.min.css';
+import style from './styles/style.css';
 
 import sectionTpl from './templates/section.ejs';
 
