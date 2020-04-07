@@ -1,22 +1,19 @@
-<div class="section">
+<div class="margin-bottom-16">
   <input
     class="input-text bc-transparent outline-none"
     title="<%= path %>"
     value="<%= path %>"
     readonly="readonly"
   />
-  <div class="section-box container-fluid">
+  <div class="margin-top-2 container-fluid">
     <ul class="row">
       <%_ files.forEach((e) => { _%>
       <li class="col-12 col-sm-2 col-xl-1 padding-4">
         <div class="img-container bc-transparent padding-2 d-flex-column-center">
-          <div class="img-frame d-flex-column-center">
+          <div class="w-64-h-64 d-flex-column-center">
             <img class="d-block"" src="<%= e.uri %>" />
           </div>
         </div>
-        <% if (e.svgWH) { %>
-        <span class="w-h">W:<%= e.svgWH.width + e.svgWH.widthUnits %>, H:<%= e.svgWH.height + e.svgWH.heightUnits %></span>
-        <% } %>
         <input
           class="input-text bc-transparent text-align-center outline-none"
           title="<%= e.basename %>"
