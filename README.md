@@ -14,13 +14,18 @@ View SVG images in gallery.
 
 ## Change Log
 
-## 1.2.4
+### 1.2.5
 
-- Added exception handler
+- Added refresh button.
+- Fixed some bugs.
 
-## 1.2.3
+### 1.2.4
 
-- Added "Open" button
+- Added exception handler.
+
+### 1.2.3
+
+- Added "Open" button.
 
 ### 1.2.2
 
