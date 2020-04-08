@@ -14,13 +14,17 @@ export default class File {
 
   constructor(private webview: vscode.Webview, public path: string) {
     this.uri = this.webview.asWebviewUri(vscode.Uri.file(path));
-    const contents: String = readFileSync(path, { encoding: ENCODING });
+    const contents: string = readFileSync(path, { encoding: ENCODING }).trim();
     if (fastXmlParser.validate(contents) === true) {
-      const o = fastXmlParser.parse(contents, { attributeNamePrefix: '', ignoreAttributes: false });
-      const { svg: { width, height } } = o;
-      if (width) { this.width = `W:${width}`; }
-      if (height) { this.height = `H:${height}`; }
-      // new fastXmlParser.j2xParser();
+      try {
+        const o = fastXmlParser.parse(contents, { attributeNamePrefix: '', ignoreAttributes: false });
+        const { svg: { width, height } } = o;
+        if (width) { this.width = `W:${width}`; }
+        if (height) { this.height = `H:${height}`; }
+        // new fastXmlParser.j2xParser();
+      } catch (error) {
+        console.error(error);
+      }
     }
     this.basename = basename(path);
   }
