@@ -3,7 +3,7 @@ import { parse, extname, join, basename } from 'path';
 import { readdirSync, Dirent } from 'fs';
 
 import Gallery from './Gallery';
-import { EXT_SVG, EXCLUDE } from './constant';
+import { EXT_SVG, EXCLUDE, VIEW_TYPE } from './constant';
 
 import galleryTpl from './templates/gallery.ejs';
 
@@ -24,7 +24,7 @@ export function activate(context: vscode.ExtensionContext) {
 
       if (!webViewPanel) {
         webViewPanel = vscode.window.createWebviewPanel(
-          path,
+          VIEW_TYPE,
           `${parse(v.path).name} - SVG Gallery`,
           vscode.ViewColumn.One,
           { enableScripts: true, enableFindWidget: true }
@@ -33,8 +33,22 @@ export function activate(context: vscode.ExtensionContext) {
         context.subscriptions.push(webViewPanel.webview.onDidReceiveMessage(({ command, args }: { command: string, args: any }) => {
           switch (command) {
             case 'OPEN_FILE':
-              const { path }: { path: string } = args;
-              if (path) { vscode.window.showTextDocument(vscode.Uri.file(path)); }
+              const { path: filePath }: { path: string } = args;
+              if (filePath) {
+                vscode.window.showTextDocument(vscode.Uri.file(filePath)).then(() => { }, () => {
+                  vscode.window.showErrorMessage('Oops! Unable to open the file.');
+                  if (webViewPanel) {
+                    const path: string = findKeyByValue<string, vscode.WebviewPanel>(webviewPanels, webViewPanel);
+                    updateWebview(webViewPanel.webview, path);
+                  }
+                });
+              }
+              return;
+            case 'REFRESH':
+              if (webViewPanel) {
+                const path: string = findKeyByValue<string, vscode.WebviewPanel>(webviewPanels, webViewPanel);
+                updateWebview(webViewPanel.webview, path);
+              }
               return;
           }
         }));
@@ -43,14 +57,22 @@ export function activate(context: vscode.ExtensionContext) {
         webViewPanel.reveal();
       }
 
-      const gallery: Gallery = buildGallery(path, webViewPanel.webview);
-      webViewPanel.webview.html = gallery.generateHtml();
+      updateWebview(webViewPanel.webview, path);
     });
   }));
 }
 
+function findKeyByValue<K, V>(map: Map<K, V>, v: V): K {
+  return [...map].filter(([, vv]) => vv === v).map(([k]) => k)[0];
+}
+
+function updateWebview(webview: vscode.Webview, path: string): void {
+  const gallery: Gallery = buildGallery(path, webview);
+  webview.html = gallery.generateHtml();
+}
+
 function buildGallery(path: string, webview: vscode.Webview): Gallery {
-  return new Gallery(webview, galleryTpl, findFilesByExt(path, EXT_SVG));
+  return new Gallery(galleryTpl, webview, findFilesByExt(path, EXT_SVG));
 }
 
 function findFilesByExt(path: string, ext: string): Map<string, string[]> {

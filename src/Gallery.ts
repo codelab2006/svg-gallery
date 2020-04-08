@@ -13,9 +13,9 @@ export default class Gallery {
   private sections: Section[] = [];
 
   constructor(
-    private webview: vscode.Webview,
     private tpl: string,
-    private map: Map<string, string[]>) {
+    webview: vscode.Webview,
+    map: Map<string, string[]>) {
     map.forEach((v: string[], k: string) => this.sections.push(new Section(webview, sectionTpl, k, v)));
   }
 
