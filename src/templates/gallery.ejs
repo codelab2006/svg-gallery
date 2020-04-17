@@ -6,6 +6,9 @@
     <%- style %>
   </head>
   <body>
+    <% if (!sections.length) { %>
+    <div id="no-results-found">No SVGs found</div>
+    <% } else { %>
     <div id="gallery-container">
       <div class="fg-1"></div>
       <input class="d-none" type="radio" id="light-frame" name="image-frame" />
@@ -18,11 +21,12 @@
         <button id="dark-frame-label" class="frame-label">Dark</button>
         <div class="flag"></div>
       </div>
-      <div class="fg-1 d-flex-row-end margin-right-5">
-        <div
+      <div class="fg-1 d-flex-row-end padding-right-4">
+        <button
           id="refresh"
+          title="Refresh gallery"
           onclick="refresh(this)"
-          class="d-flex-column-center padding-2 cursor-pointer border-1-editor-foreground"
+          class="d-flex-column-center padding-2"
         >
           <svg
             class="bi bi-arrow-clockwise"
@@ -43,7 +47,7 @@
               clip-rule="evenodd"
             />
           </svg>
-        </div>
+        </button>
       </div>
       <ul class="gallery">
         <%_ sections.forEach((e) => { _%>
@@ -87,5 +91,6 @@
         themeCallback(lightFrameId);
       }
     </script>
+    <% } %>
   </body>
 </html>

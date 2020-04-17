@@ -14,6 +14,14 @@ View SVG images in gallery.
 
 ## Change Log
 
+### 1.2.7
+
+- Added "No SVGs found" message.
+
+### 1.2.6
+
+- Fixed some bugs.
+
 ### 1.2.5
 
 - Added refresh button.
