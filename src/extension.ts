@@ -48,6 +48,7 @@ export function activate(context: vscode.ExtensionContext) {
               if (webViewPanel) {
                 const path: string = findKeyByValue<string, vscode.WebviewPanel>(webviewPanels, webViewPanel);
                 updateWebview(webViewPanel.webview, path);
+                vscode.window.setStatusBarMessage('Refreshing...', 1000);
               }
               return;
           }
