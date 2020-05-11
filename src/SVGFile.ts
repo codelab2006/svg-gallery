@@ -5,7 +5,7 @@ import { ENCODING } from './constant';
 
 const fastXmlParser = require('fast-xml-parser');
 
-export default class File {
+export default class SVGFile {
 
   public basename: string | undefined;
   public uri: vscode.Uri | undefined;
@@ -21,7 +21,6 @@ export default class File {
         const { svg: { width, height } } = o;
         if (width) { this.width = `W:${width}`; }
         if (height) { this.height = `H:${height}`; }
-        // new fastXmlParser.j2xParser();
       } catch (error) {
         console.error(error);
       }

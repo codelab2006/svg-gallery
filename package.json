@@ -36,13 +36,20 @@
       "commandPalette": [
         {
           "command": "SVGGallery.open",
-          "when": "explorerResourceIsFolder"
+          "when": "explorerResourceIsFolder || resourceFilename =~ /.+\\.svg$/i"
         }
       ],
       "explorer/context": [
         {
           "command": "SVGGallery.open",
-          "when": "explorerResourceIsFolder",
+          "when": "explorerResourceIsFolder || resourceFilename =~ /.+\\.svg$/i",
+          "group": "SVGGallery@1"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "SVGGallery.open",
+          "when": "explorerResourceIsFolder || resourceFilename =~ /.+\\.svg$/i",
           "group": "SVGGallery@1"
         }
       ]
