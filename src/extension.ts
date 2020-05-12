@@ -10,10 +10,12 @@ import GALLERY_TPL from './templates/gallery.ejs';
 const { v4: uuidv4 } = require('uuid');
 
 abstract class AbstractGallery {
+
+  private key: string = uuidv4();
+
   constructor(
     protected context: vscode.ExtensionContext,
-    protected webviewPanels: Map<string, vscode.WebviewPanel>,
-    protected key: string) { }
+    protected webviewPanels: Map<string, vscode.WebviewPanel>) { }
 
   build(): void {
     let webViewPanel: vscode.WebviewPanel | undefined = this.webviewPanels.get(this.key);
@@ -23,7 +25,7 @@ abstract class AbstractGallery {
     } else {
       webViewPanel = this.createWebviewPanel(`${this.generateWebviewPanelTitle()} - SVG Gallery`);
       this.context.subscriptions.push(webViewPanel.onDidChangeViewState((e: vscode.WebviewPanelOnDidChangeViewStateEvent) => {
-        if (e.webviewPanel.visible) { this.refreshWebview(e.webviewPanel.webview); }
+        if (e.webviewPanel.visible) { this.refreshWebview(e.webviewPanel); }
       }));
       this.context.subscriptions.push(webViewPanel.onDidDispose(() => this.webviewPanels.delete(this.key)));
       this.context.subscriptions.push(webViewPanel.webview.onDidReceiveMessage(({ command, args }: { command: string, args: any }) => {
@@ -33,17 +35,13 @@ abstract class AbstractGallery {
             if (filePath) {
               vscode.window.showTextDocument(vscode.Uri.file(filePath)).then(() => { }, () => {
                 vscode.window.showErrorMessage('Oops! Unable to open the file.');
-                if (webViewPanel) {
-                  const path: string = this.findKeyByValue<string, vscode.WebviewPanel>(this.webviewPanels, webViewPanel);
-                  this.refreshWebview(webViewPanel.webview);
-                }
+                if (webViewPanel) { this.refreshWebview(webViewPanel); }
               });
             }
             return;
           case 'REFRESH':
             if (webViewPanel) {
-              const path: string = this.findKeyByValue<string, vscode.WebviewPanel>(this.webviewPanels, webViewPanel);
-              this.refreshWebview(webViewPanel.webview);
+              this.refreshWebview(webViewPanel);
               vscode.window.setStatusBarMessage('Refreshing...', 1000);
             }
             return;
@@ -51,7 +49,7 @@ abstract class AbstractGallery {
       }));
       this.webviewPanels.set(this.key, webViewPanel);
     }
-    this.refreshWebview(webViewPanel.webview);
+    this.refreshWebview(webViewPanel);
   }
 
   private createWebviewPanel(title: string): vscode.WebviewPanel {
@@ -63,11 +61,8 @@ abstract class AbstractGallery {
     );
   }
 
-  private findKeyByValue<K, V>(map: Map<K, V>, v: V): K {
-    return [...map].filter(([, vv]) => vv === v).map(([k]) => k)[0];
-  }
-
-  private refreshWebview(webview: vscode.Webview): void {
+  private refreshWebview(webviewPanel: vscode.WebviewPanel): void {
+    const webview = webviewPanel.webview;
     const gallery: Gallery = new Gallery(GALLERY_TPL, webview, this.generateGalleryData());
     webview.html = gallery.generateHtml();
   }
@@ -82,7 +77,7 @@ class FileGallery extends AbstractGallery {
     context: vscode.ExtensionContext,
     webviewPanels: Map<string, vscode.WebviewPanel>,
     private v: any[]) {
-    super(context, webviewPanels, uuidv4());
+    super(context, webviewPanels);
   }
 
   protected generateWebviewPanelTitle(): string {
@@ -100,7 +95,7 @@ class FolderGallery extends AbstractGallery {
     context: vscode.ExtensionContext,
     webviewPanels: Map<string, vscode.WebviewPanel>,
     private v: any) {
-    super(context, webviewPanels, v.fsPath);
+    super(context, webviewPanels);
   }
 
   protected generateWebviewPanelTitle(): string {
