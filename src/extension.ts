@@ -7,6 +7,8 @@ import { EXT_SVG, EXCLUDE, VIEW_TYPE } from './constant';
 
 import GALLERY_TPL from './templates/gallery.ejs';
 
+const { v4: uuidv4 } = require('uuid');
+
 abstract class AbstractGallery {
   constructor(
     protected context: vscode.ExtensionContext,
@@ -79,8 +81,8 @@ class FileGallery extends AbstractGallery {
   constructor(
     context: vscode.ExtensionContext,
     webviewPanels: Map<string, vscode.WebviewPanel>,
-    v: any) {
-    super(context, webviewPanels, v);
+    private v: any[]) {
+    super(context, webviewPanels, uuidv4());
   }
 
   protected generateWebviewPanelTitle(): string {
@@ -144,7 +146,7 @@ export function activate(context: vscode.ExtensionContext) {
       if (stats.isFile() && regexp.test(item.fsPath)) { selectedFiles.push(item); }
       if (stats.isDirectory()) { selectedFolders.push(item); }
     });
-    // new FileGallery(context, webviewPanels, selectedFiles).build();
+    if (selectedFiles.length) { new FileGallery(context, webviewPanels, selectedFiles).build(); }
     selectedFolders.forEach((v: any) => new FolderGallery(context, webviewPanels, v).build());
   }));
 }
