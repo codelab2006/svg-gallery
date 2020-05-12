@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { parse, extname, join, basename } from 'path';
-import { readdirSync, Dirent } from 'fs';
+import { readdirSync, Dirent, statSync, Stats } from 'fs';
 
 import Gallery from './Gallery';
 import { EXT_SVG, EXCLUDE, VIEW_TYPE } from './constant';
@@ -11,10 +11,10 @@ abstract class AbstractGallery {
   constructor(
     protected context: vscode.ExtensionContext,
     protected webviewPanels: Map<string, vscode.WebviewPanel>,
-    protected v: any) { }
+    protected key: string) { }
 
   build(): void {
-    let webViewPanel: vscode.WebviewPanel | undefined = this.webviewPanels.get(this.v.fsPath);
+    let webViewPanel: vscode.WebviewPanel | undefined = this.webviewPanels.get(this.key);
 
     if (webViewPanel) {
       webViewPanel.reveal();
@@ -23,7 +23,7 @@ abstract class AbstractGallery {
       this.context.subscriptions.push(webViewPanel.onDidChangeViewState((e: vscode.WebviewPanelOnDidChangeViewStateEvent) => {
         if (e.webviewPanel.visible) { this.refreshWebview(e.webviewPanel.webview); }
       }));
-      this.context.subscriptions.push(webViewPanel.onDidDispose(() => this.webviewPanels.delete(this.v.fsPath)));
+      this.context.subscriptions.push(webViewPanel.onDidDispose(() => this.webviewPanels.delete(this.key)));
       this.context.subscriptions.push(webViewPanel.webview.onDidReceiveMessage(({ command, args }: { command: string, args: any }) => {
         switch (command) {
           case 'OPEN_FILE':
@@ -47,7 +47,7 @@ abstract class AbstractGallery {
             return;
         }
       }));
-      this.webviewPanels.set(this.v.fsPath, webViewPanel);
+      this.webviewPanels.set(this.key, webViewPanel);
     }
     this.refreshWebview(webViewPanel.webview);
   }
@@ -97,12 +97,12 @@ class FolderGallery extends AbstractGallery {
   constructor(
     context: vscode.ExtensionContext,
     webviewPanels: Map<string, vscode.WebviewPanel>,
-    v: any) {
-    super(context, webviewPanels, v);
+    private v: any) {
+    super(context, webviewPanels, v.fsPath);
   }
 
   protected generateWebviewPanelTitle(): string {
-    return parse(this.v.path).name;
+    return parse(this.v.fsPath).name;
   }
 
   protected generateGalleryData(): Map<string, string[]> {
@@ -134,9 +134,17 @@ export function activate(context: vscode.ExtensionContext) {
   console.log('Congratulations, your extension "SVG Gallery" is now active!');
 
   const webviewPanels: Map<string, vscode.WebviewPanel> = new Map();
+  const regexp: RegExp = /.+\.svg$/i;
 
-  context.subscriptions.push(vscode.commands.registerCommand('SVGGallery.open', (folder: any, folders: any[]) => {
-    const selectedFolders: any[] = folders.length ? folders : [folder];
+  context.subscriptions.push(vscode.commands.registerCommand('SVGGallery.open', (item: any, items: any[]) => {
+    const selectedFiles: any[] = [];
+    const selectedFolders: any[] = [];
+    (items.length ? items : [item]).forEach((item: any) => {
+      const stats: Stats = statSync(item.fsPath);
+      if (stats.isFile() && regexp.test(item.fsPath)) { selectedFiles.push(item); }
+      if (stats.isDirectory()) { selectedFolders.push(item); }
+    });
+    // new FileGallery(context, webviewPanels, selectedFiles).build();
     selectedFolders.forEach((v: any) => new FolderGallery(context, webviewPanels, v).build());
   }));
 }
