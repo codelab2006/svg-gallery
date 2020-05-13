@@ -80,7 +80,7 @@ class FileGallery extends AbstractGallery {
   }
 
   protected generateWebviewPanelTitle(): string {
-    return this.v.length === 1 ? parse(this.v[0].fsPath).name : TEXT_MULTIPLE_FILES;
+    return this.v.length === 1 ? parse(this.v[0].fsPath).base : TEXT_MULTIPLE_FILES;
   }
 
   protected generateGalleryData(): Map<string, string[]> {
