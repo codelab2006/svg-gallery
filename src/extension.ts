@@ -141,7 +141,7 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(vscode.commands.registerCommand('SVGGallery.open', (item: any, items: any[]) => {
     const selectedFiles: any[] = [];
     const selectedFolders: any[] = [];
-    (items.length ? items : [item]).forEach((item: any) => {
+    (items && items.length ? items : [item]).forEach((item: any) => {
       const stats: Stats = statSync(item.fsPath);
       if (stats.isFile() && regexp.test(item.fsPath)) { selectedFiles.push(item); }
       if (stats.isDirectory()) { selectedFolders.push(item); }
