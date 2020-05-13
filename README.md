@@ -14,6 +14,10 @@ View SVG images in gallery.
 
 ## Change Log
 
+### 2.1.0
+
+- Updated webview panel title for single SVG.
+
 ### 2.0.0
 
 - Refactor extension.
