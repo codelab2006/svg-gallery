@@ -3,7 +3,7 @@ import { parse, extname, join, basename } from 'path';
 import { readdirSync, Dirent, statSync, Stats } from 'fs';
 
 import Gallery from './Gallery';
-import { EXT_SVG, EXCLUDE, VIEW_TYPE } from './constant';
+import { EXT_SVG, EXCLUDE, VIEW_TYPE, TEXT_MULTIPLE_FILES } from './constant';
 
 import GALLERY_TPL from './templates/gallery.ejs';
 
@@ -80,7 +80,7 @@ class FileGallery extends AbstractGallery {
   }
 
   protected generateWebviewPanelTitle(): string {
-    return this.v.length === 1 ? parse(this.v[0].fsPath).name : 'Multiple files';
+    return this.v.length === 1 ? parse(this.v[0].fsPath).name : TEXT_MULTIPLE_FILES;
   }
 
   protected generateGalleryData(): Map<string, string[]> {
