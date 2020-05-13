@@ -11,11 +11,10 @@ const { v4: uuidv4 } = require('uuid');
 
 abstract class AbstractGallery {
 
-  private key: string = uuidv4();
-
   constructor(
     protected context: vscode.ExtensionContext,
-    protected webviewPanels: Map<string, vscode.WebviewPanel>) { }
+    protected webviewPanels: Map<string, vscode.WebviewPanel>,
+    private key: string) { }
 
   build(): void {
     let webViewPanel: vscode.WebviewPanel | undefined = this.webviewPanels.get(this.key);
@@ -77,15 +76,21 @@ class FileGallery extends AbstractGallery {
     context: vscode.ExtensionContext,
     webviewPanels: Map<string, vscode.WebviewPanel>,
     private v: any[]) {
-    super(context, webviewPanels);
+    super(context, webviewPanels, v.length === 1 ? v[0].fsPath : uuidv4());
   }
 
   protected generateWebviewPanelTitle(): string {
-    throw new Error("Method not implemented.");
+    return this.v.length === 1 ? parse(this.v[0].fsPath).name : 'Multiple files';
   }
 
   protected generateGalleryData(): Map<string, string[]> {
-    throw new Error("Method not implemented.");
+    const map: Map<string, string[]> = new Map();
+    this.v.forEach((e: any) => {
+      const dir: string = parse(e.fsPath).dir;
+      if (!map.has(dir)) { map.set(dir, []); }
+      map.get(dir)?.push(e.fsPath);
+    });
+    return map;
   }
 }
 
@@ -95,7 +100,7 @@ class FolderGallery extends AbstractGallery {
     context: vscode.ExtensionContext,
     webviewPanels: Map<string, vscode.WebviewPanel>,
     private v: any) {
-    super(context, webviewPanels);
+    super(context, webviewPanels, v.fsPath);
   }
 
   protected generateWebviewPanelTitle(): string {
