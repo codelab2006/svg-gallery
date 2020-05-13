@@ -14,6 +14,11 @@ View SVG images in gallery.
 
 ## Change Log
 
+### 2.0.0
+
+- Refactor extension.
+- Added support for opening single SVG.
+
 ### 1.2.8
 
 - Added "Refreshing" message.
