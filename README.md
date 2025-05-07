@@ -14,6 +14,10 @@ View SVG images in gallery.
 
 ## Change Log
 
+### 2.2.0
+
+- Added custom background color for the image frame
+
 ### 2.1.0
 
 - Updated webview panel title for single SVG.

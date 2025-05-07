@@ -5,16 +5,13 @@
     "ecmaVersion": 6,
     "sourceType": "module"
   },
-  "plugins": [
-    "@typescript-eslint"
-  ],
+  "plugins": ["@typescript-eslint"],
   "rules": {
     "@typescript-eslint/class-name-casing": "error",
     "@typescript-eslint/semi": "error",
     "curly": "error",
     "eqeqeq": "error",
     "no-throw-literal": "error",
-    "comma-dangle": "error",
     "comma-spacing": "error",
     "comma-style": "error",
     "semi": "off"

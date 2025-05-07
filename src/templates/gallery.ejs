@@ -21,6 +21,13 @@
         <button id="dark-frame-label" class="frame-label">Dark</button>
         <div class="flag"></div>
       </div>
+      <input class="d-none" type="radio" id="custom-frame" name="image-frame" />
+      <div class="p-relative frame-label-container">
+        <button id="custom-frame-label" class="frame-label">
+          <input type="color" id="picker" />
+        </button>
+        <div class="flag"></div>
+      </div>
       <div class="fg-1 d-flex-row-end padding-right-4">
         <button
           id="refresh"
@@ -59,20 +66,38 @@
       const vscode = acquireVsCodeApi();
       const lightFrameId = "#light-frame";
       const darkFrameId = "#dark-frame";
+      const customFrameId = "#custom-frame";
+      const customBgColor = "#00ff00";
+
+      const picker = document.getElementById("picker");
+      picker.value = customBgColor;
+      picker.addEventListener("input", (event) => {
+        themeCallback(customFrameId, event.target.value);
+      });
 
       const refresh = () => {
         vscode.postMessage({ command: "REFRESH" });
       };
 
-      const themeCallback = (inputId) => {
+      const themeCallback = (inputId, bgColor) => {
         document.querySelector(inputId).click();
-        vscode.setState({ frameId: inputId });
+        vscode.setState({ frameId: inputId, bgColor });
+
+        const cs = document.querySelectorAll(".img-container");
+        cs.forEach((e) => {
+          const style = e.style;
+          if (bgColor !== undefined) style.backgroundColor = bgColor;
+          else style.backgroundColor = "";
+        });
       };
       document.querySelector("#light-frame-label").onclick = () => {
         themeCallback(lightFrameId);
       };
       document.querySelector("#dark-frame-label").onclick = () => {
         themeCallback(darkFrameId);
+      };
+      document.querySelector("#custom-frame-label").onclick = () => {
+        themeCallback(customFrameId, vscode.getState().bgColor || picker.value);
       };
       document.querySelector("#gallery-container").onclick = ({
         target: {
@@ -84,9 +109,11 @@
         }
       };
 
-      const { frameId } = vscode.getState() || {};
+      const { frameId, bgColor } = vscode.getState() || {};
+
       if (frameId) {
-        themeCallback(frameId);
+        if (bgColor !== undefined) picker.value = bgColor;
+        themeCallback(frameId, bgColor);
       } else {
         themeCallback(lightFrameId);
       }

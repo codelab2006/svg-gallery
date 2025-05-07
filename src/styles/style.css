@@ -104,6 +104,10 @@
   color: var(--light-color);
   background-color: var(--dark-color);
 }
+#picker {
+  border: 0;
+  height: 16px;
+}
 .flag {
   position: absolute;
   top: 6px;
@@ -123,12 +127,12 @@ input[type="radio"]#dark-frame:checked ~ .gallery .img-container {
 }
 #no-results-found {
   color: var(--vscode-editor-foreground);
-  background-color: color: var(--vscode-editor-background);
+  background-color: var(--vscode-editor-background);
 }
 #refresh {
   border: 1px solid var(--vscode-editor-foreground);
   color: var(--vscode-editor-foreground);
-  background-color: color: var(--vscode-editor-background);
+  background-color: var(--vscode-editor-background);
 }
 .svg-container:hover > .action {
   display: flex !important;
