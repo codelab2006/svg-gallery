@@ -14,9 +14,13 @@ View SVG images in gallery.
 
 ## Change Log
 
+### 2.3.0
+
+- Added support for displaying .png, .jpg, .jpeg, .webp, .gif, .bmp, .ico files.
+
 ### 2.2.0
 
-- Added custom background color for the image frame
+- Added custom background color for the image frame.
 
 ### 2.1.0
 

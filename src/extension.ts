@@ -3,18 +3,31 @@ import { parse, extname, join, basename } from "path";
 import { readdirSync, Dirent, statSync, Stats } from "fs";
 
 import Gallery from "./Gallery";
-import { EXT_SET, EXCLUDE, VIEW_TYPE, TEXT_MULTIPLE_FILES } from "./constant";
+import {
+  EXT_SET,
+  EXCLUDE,
+  VIEW_TYPE,
+  TEXT_MULTIPLE_FILES,
+  SVG_EXT,
+} from "./constant";
 
 import GALLERY_TPL from "./templates/gallery.ejs";
 
 import { nanoid } from "nanoid";
+
+export const SHOW_SVG_ONLY = "showSVGOnly";
+export const CUSTOM_BG_COLOR = "customBgColor";
 
 abstract class AbstractGallery {
   constructor(
     protected context: vscode.ExtensionContext,
     protected webviewPanels: Map<string, vscode.WebviewPanel>,
     private key: string
-  ) {}
+  ) {
+    if (context.workspaceState.get(SHOW_SVG_ONLY) === undefined) {
+      context.workspaceState.update(SHOW_SVG_ONLY, true);
+    }
+  }
 
   build(): void {
     let webViewPanel: vscode.WebviewPanel | undefined = this.webviewPanels.get(
@@ -67,6 +80,17 @@ abstract class AbstractGallery {
                   vscode.window.setStatusBarMessage("Refreshing...", 1000);
                 }
                 return;
+              case "SAVE_CUSTOM_BG_COLOR_CONFIG":
+                const { value }: { value: boolean } = args;
+                this.context.workspaceState.update(CUSTOM_BG_COLOR, value);
+                return;
+              case "SAVE_SHOW_SVG_ONLY_CONFIG":
+                if (webViewPanel) {
+                  const { value }: { value: boolean } = args;
+                  this.context.workspaceState.update(SHOW_SVG_ONLY, value);
+                  this.refreshWebview(webViewPanel);
+                }
+                return;
             }
           }
         )
@@ -88,6 +112,7 @@ abstract class AbstractGallery {
   private refreshWebview(webviewPanel: vscode.WebviewPanel): void {
     const webview = webviewPanel.webview;
     const gallery: Gallery = new Gallery(
+      this.context,
       GALLERY_TPL,
       webview,
       this.generateGalleryData()
@@ -155,7 +180,12 @@ class FolderGallery extends AbstractGallery {
     }
 
     const ds: Dirent[] = readdirSync(path, { withFileTypes: true });
-    const files = this.filterByExt(ds, extSet).map((e) => join(path, e.name));
+    let files = this.filterByExt(ds, extSet).map((e) => join(path, e.name));
+    if (this.context.workspaceState.get(SHOW_SVG_ONLY)) {
+      files = files.filter(
+        (file) => extname(file).toLocaleLowerCase() === SVG_EXT
+      );
+    }
     if (files.length) {
       result.set(path, files);
     }
@@ -180,7 +210,7 @@ export function activate(context: vscode.ExtensionContext) {
   console.log('Congratulations, your extension "SVG Gallery" is now active!');
 
   const webviewPanels: Map<string, vscode.WebviewPanel> = new Map();
-  const regexp: RegExp = /.+\.svg$/i;
+  const regexp: RegExp = /.+\.(svg|png|jpg|jpeg|webp|gif|bmp|ico)$/i;
 
   context.subscriptions.push(
     vscode.commands.registerCommand(

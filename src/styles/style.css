@@ -78,6 +78,9 @@
 .padding-right-4 {
   padding-right: 4px;
 }
+.padding-right-16 {
+  padding-right: 16px;
+}
 #gallery-container {
   display: flex;
   flex-wrap: wrap;
