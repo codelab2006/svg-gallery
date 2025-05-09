@@ -7,7 +7,7 @@ import { EXT_SET, EXCLUDE, VIEW_TYPE, TEXT_MULTIPLE_FILES } from "./constant";
 
 import GALLERY_TPL from "./templates/gallery.ejs";
 
-const { v4: uuidv4 } = require("uuid");
+import { nanoid } from "nanoid";
 
 abstract class AbstractGallery {
   constructor(
@@ -105,7 +105,7 @@ class FileGallery extends AbstractGallery {
     webviewPanels: Map<string, vscode.WebviewPanel>,
     private v: any[]
   ) {
-    super(context, webviewPanels, v.length === 1 ? v[0].fsPath : uuidv4());
+    super(context, webviewPanels, v.length === 1 ? v[0].fsPath : nanoid());
   }
 
   protected generateWebviewPanelTitle(): string {
