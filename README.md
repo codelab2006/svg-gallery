@@ -14,6 +14,14 @@ View SVG images in gallery.
 
 ## Change Log
 
+### 2.5.0
+
+- Optimize performance P2.
+
+### 2.4.0
+
+- Optimize performance.
+
 ### 2.3.0
 
 - Added support for displaying .png, .jpg, .jpeg, .webp, .gif, .bmp, .ico files.
