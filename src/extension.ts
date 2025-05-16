@@ -209,12 +209,14 @@ class FolderGallery extends AbstractGallery {
             extSet
           );
           for (const [subPath, subFiles] of subResult.entries()) {
-            result.set(subPath, subFiles);
+            result.set(subPath, subFiles.sort());
           }
         })
     );
 
-    return result;
+    return new Map(
+      [...result.entries()].sort((a, b) => a[0].localeCompare(b[0]))
+    );
   }
 
   private filterByExt(ds: Dirent[], extSet: Set<string>): Dirent[] {
