@@ -70,6 +70,16 @@
       </ul>
     </div>
     <script>
+          function debounce(func, delay) {
+            let timer = null;
+            return function(...args) {
+              clearTimeout(timer);
+              timer = setTimeout(() => {
+                func.apply(this, args);
+              }, delay);
+            };
+          }
+
           const vscode = acquireVsCodeApi();
           const lightFrameId = "#light-frame";
           const darkFrameId = "#dark-frame";
@@ -79,7 +89,7 @@
           const picker = document.getElementById("picker");
           picker.value = customBgColor;
           picker.addEventListener("input", (event) => {
-            themeCallback(customFrameId, event.target.value);
+            debouncedThemeCallback(customFrameId, event.target.value);
           });
 
           const refresh = () => {
@@ -103,6 +113,7 @@
               else style.backgroundColor = "";
             });
           };
+          const debouncedThemeCallback = debounce((inputId, bgColor) => themeCallback(inputId, bgColor), 200);
           document.querySelector("#light-frame-label").onclick = () => {
             themeCallback(lightFrameId);
           };
