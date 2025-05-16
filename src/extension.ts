@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 import { parse, extname, join, basename } from "path";
-import { readdirSync, Dirent, statSync, Stats } from "fs";
+import { Dirent, statSync, Stats } from "fs";
+import { readdir } from "fs/promises";
 
 import Gallery from "./Gallery";
 import {
@@ -110,18 +111,21 @@ abstract class AbstractGallery {
   }
 
   private refreshWebview(webviewPanel: vscode.WebviewPanel): void {
-    const webview = webviewPanel.webview;
-    const gallery: Gallery = new Gallery(
-      this.context,
-      GALLERY_TPL,
-      webview,
-      this.generateGalleryData()
-    );
-    webview.html = gallery.generateHtml();
+    void (async () => {
+      const data = await this.generateGalleryData();
+      const webview = webviewPanel.webview;
+      const gallery: Gallery = new Gallery(
+        this.context,
+        GALLERY_TPL,
+        webview,
+        data
+      );
+      webview.html = gallery.generateHtml();
+    })();
   }
 
   protected abstract generateWebviewPanelTitle(): string;
-  protected abstract generateGalleryData(): Map<string, string[]>;
+  protected abstract generateGalleryData(): Promise<Map<string, string[]>>;
 }
 
 class FileGallery extends AbstractGallery {
@@ -139,7 +143,7 @@ class FileGallery extends AbstractGallery {
       : TEXT_MULTIPLE_FILES;
   }
 
-  protected generateGalleryData(): Map<string, string[]> {
+  protected async generateGalleryData(): Promise<Map<string, string[]>> {
     const map: Map<string, string[]> = new Map();
     this.v.forEach((e: any) => {
       const dir: string = parse(e.fsPath).dir;
@@ -148,7 +152,7 @@ class FileGallery extends AbstractGallery {
       }
       map.get(dir)?.push(e.fsPath);
     });
-    return map;
+    return Promise.resolve(map);
   }
 }
 
@@ -165,42 +169,57 @@ class FolderGallery extends AbstractGallery {
     return parse(this.v.fsPath).name;
   }
 
-  protected generateGalleryData(): Map<string, string[]> {
-    return this.findFilesByExt(this.v.fsPath, EXT_SET);
+  protected async generateGalleryData(): Promise<Map<string, string[]>> {
+    return await this.findFilesByExtAsync(this.v.fsPath, EXT_SET);
   }
 
-  private findFilesByExt(
+  private async findFilesByExtAsync(
     path: string,
     extSet: Set<string>
-  ): Map<string, string[]> {
-    let result: Map<string, string[]> = new Map();
+  ): Promise<Map<string, string[]>> {
+    const result = new Map<string, string[]>();
 
     if (EXCLUDE.has(basename(path))) {
       return result;
     }
 
-    const ds: Dirent[] = readdirSync(path, { withFileTypes: true });
-    let files = this.filterByExt(ds, extSet).map((e) => join(path, e.name));
-    if (this.context.workspaceState.get(SHOW_SVG_ONLY)) {
-      files = files.filter(
-        (file) => extname(file).toLocaleLowerCase() === SVG_EXT
-      );
+    let ds: Dirent[];
+    try {
+      ds = await readdir(path, { withFileTypes: true });
+    } catch {
+      return result;
     }
+
+    let files = this.filterByExt(ds, extSet).map((e) => join(path, e.name));
+
+    if (this.context.workspaceState.get(SHOW_SVG_ONLY)) {
+      files = files.filter((file) => extname(file).toLowerCase() === SVG_EXT);
+    }
+
     if (files.length) {
       result.set(path, files);
     }
-    ds.filter((d) => d.isDirectory()).forEach((d) => {
-      result = new Map([
-        ...result,
-        ...this.findFilesByExt(join(path, d.name), extSet),
-      ]);
-    });
+
+    await Promise.all(
+      ds
+        .filter((d) => d.isDirectory())
+        .map(async (d) => {
+          const subResult = await this.findFilesByExtAsync(
+            join(path, d.name),
+            extSet
+          );
+          for (const [subPath, subFiles] of subResult.entries()) {
+            result.set(subPath, subFiles);
+          }
+        })
+    );
+
     return result;
   }
 
   private filterByExt(ds: Dirent[], extSet: Set<string>): Dirent[] {
     return ds.filter(
-      (d) => d.isFile() && extSet.has(extname(d.name).toLocaleLowerCase())
+      (d) => d.isFile() && extSet.has(extname(d.name).toLowerCase())
     );
   }
 }
