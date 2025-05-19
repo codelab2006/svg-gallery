@@ -12,14 +12,10 @@
         <div
           class="img-container bc-transparent padding-2 d-flex-column-center"
         >
-          <div class="svg-container w-64-h-64 d-flex-column-center p-relative">
-            <img class="d-block lazy-img" data-src="<%= e.uri %>" />
-            <div
-              class="action d-none p-absolute t-0-r-0-b-0-l-0 d-flex-column-center"
-            >
-              <button class="open" data-path="<%= e.path %>">Open</button>
-            </div>
-          </div>
+          <div
+            class="svg-container w-64-h-64 d-flex-column-center p-relative"
+            data-src="<%= e.uri %>"
+          ></div>
         </div>
         <span class="d-block fs-xx-small ta-right"
           ><%= e.width %> <%= e.height %></span

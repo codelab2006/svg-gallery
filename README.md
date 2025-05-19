@@ -14,6 +14,10 @@ View SVG images in gallery.
 
 ## Change Log
 
+### 2.5.2
+
+- Optimize performance P3.
+
 ### 2.5.0
 
 - Optimize performance P2.

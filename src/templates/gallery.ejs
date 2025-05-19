@@ -5,6 +5,7 @@
     <title>SVG Gallery</title>
     <%- style %>
   </head>
+
   <body>
     <% if (!sections.length) { %>
     <p class="padding-2" id="no-results-found">No SVGs found</p>
@@ -64,114 +65,116 @@
         </button>
       </div>
       <ul class="gallery">
-        <%_ sections.forEach((e) => { _%>
+        <%_ sections.forEach((e)=> { _%>
         <li><%- e %></li>
         <%_ }) _%>
       </ul>
     </div>
     <script>
-          function debounce(func, delay) {
-            let timer = null;
-            return function(...args) {
-              clearTimeout(timer);
-              timer = setTimeout(() => {
-                func.apply(this, args);
-              }, delay);
-            };
-          }
+      function debounce(func, delay) {
+        let timer = null;
+        return function (...args) {
+          clearTimeout(timer);
+          timer = setTimeout(() => {
+            func.apply(this, args);
+          }, delay);
+        };
+      }
 
-          const vscode = acquireVsCodeApi();
-          const lightFrameId = "#light-frame";
-          const darkFrameId = "#dark-frame";
-          const customFrameId = "#custom-frame";
-          const customBgColor = <%- JSON.stringify(customBgColor) %>;
+      const vscode = acquireVsCodeApi();
+      const lightFrameId = "#light-frame";
+      const darkFrameId = "#dark-frame";
+      const customFrameId = "#custom-frame";
+      const customBgColor = <%- JSON.stringify(customBgColor) %>;
 
-          const picker = document.getElementById("picker");
-          picker.value = customBgColor;
-          picker.addEventListener("input", (event) => {
-            debouncedThemeCallback(customFrameId, event.target.value);
-          });
-
-          const refresh = () => {
-            vscode.postMessage({ command: "REFRESH" });
-          };
-
-          const themeCallback = (inputId, bgColor) => {
-            document.querySelector(inputId).click();
-            vscode.setState({ frameId: inputId, bgColor });
-
-            const cs = document.querySelectorAll(".img-container");
-            cs.forEach((e) => {
-              const style = e.style;
-              if (bgColor !== undefined) {
-                style.backgroundColor = bgColor;
-                vscode.postMessage({
-                  command: "SAVE_CUSTOM_BG_COLOR_CONFIG",
-                  args: { value: bgColor },
-                });
-              }
-              else style.backgroundColor = "";
-            });
-          };
-          const debouncedThemeCallback = debounce((inputId, bgColor) => themeCallback(inputId, bgColor), 200);
-          document.querySelector("#light-frame-label").onclick = () => {
-            themeCallback(lightFrameId);
-          };
-          document.querySelector("#dark-frame-label").onclick = () => {
-            themeCallback(darkFrameId);
-          };
-          document.querySelector("#custom-frame-label").onclick = () => {
-            themeCallback(customFrameId, vscode.getState().bgColor || picker.value);
-          };
-          document.querySelector("#gallery-container").onclick = ({
-            target: {
-              dataset: { path },
-            },
-          }) => {
-            if (path) {
-              vscode.postMessage({ command: "OPEN_FILE", args: { path: path } });
-            }
-          };
-
-          const { frameId, bgColor } = vscode.getState() || {};
-
-          if (frameId) {
-            if (bgColor !== undefined) picker.value = bgColor;
-            themeCallback(frameId, bgColor);
-          } else {
-            themeCallback(lightFrameId);
-          }
-
-          const showSVGOnly = document.querySelector("#show-svg-only");
-          showSVGOnly.addEventListener("change", (event) => {
-            vscode.postMessage({
-              command: "SAVE_SHOW_SVG_ONLY_CONFIG",
-              args: { value: showSVGOnly.checked },
-            });
-          });
-
-      const observer = new IntersectionObserver(
-        (entries, observer) => {
-          entries.forEach(entry => {
-            const img = entry.target.querySelector("img.lazy-img");
-            if (entry.isIntersecting) {
-              if (img && img.dataset.src) {
-                img.src = img.dataset.src;
-                img.removeAttribute("data-src");
-              }
-            } else {
-              if (img && img.src) {
-                img.dataset.src = img.src;
-                img.removeAttribute("src");
-              }
-            }
-          });
-        },
-      );
-
-      document.querySelectorAll(".svg-container").forEach(container => {
-        observer.observe(container);
+      const picker = document.getElementById("picker");
+      picker.value = customBgColor;
+      picker.addEventListener("input", (event) => {
+        debouncedThemeCallback(customFrameId, event.target.value);
       });
+
+      const refresh = () => {
+        vscode.postMessage({ command: "REFRESH" });
+      };
+
+      const themeCallback = (inputId, bgColor) => {
+        document.querySelector(inputId).click();
+        vscode.setState({ frameId: inputId, bgColor });
+
+        const cs = document.querySelectorAll(".img-container");
+        cs.forEach((e) => {
+          const style = e.style;
+          if (bgColor !== undefined) {
+            style.backgroundColor = bgColor;
+            vscode.postMessage({
+              command: "SAVE_CUSTOM_BG_COLOR_CONFIG",
+              args: { value: bgColor },
+            });
+          }
+          else style.backgroundColor = "";
+        });
+      };
+      const debouncedThemeCallback = debounce((inputId, bgColor) => themeCallback(inputId, bgColor), 200);
+      document.querySelector("#light-frame-label").onclick = () => {
+        themeCallback(lightFrameId);
+      };
+      document.querySelector("#dark-frame-label").onclick = () => {
+        themeCallback(darkFrameId);
+      };
+      document.querySelector("#custom-frame-label").onclick = () => {
+        themeCallback(customFrameId, vscode.getState().bgColor || picker.value);
+      };
+      document.querySelector("#gallery-container").onclick = ({
+        target: {
+          dataset: { path },
+        },
+      }) => {
+        if (path) {
+          vscode.postMessage({ command: "OPEN_FILE", args: { path: path } });
+        }
+      };
+
+      const { frameId, bgColor } = vscode.getState() || {};
+
+      if (frameId) {
+        if (bgColor !== undefined) picker.value = bgColor;
+        themeCallback(frameId, bgColor);
+      } else {
+        themeCallback(lightFrameId);
+      }
+
+      const showSVGOnly = document.querySelector("#show-svg-only");
+      showSVGOnly.addEventListener("change", (event) => {
+        vscode.postMessage({
+          command: "SAVE_SHOW_SVG_ONLY_CONFIG",
+          args: { value: showSVGOnly.checked },
+        });
+      });
+
+      (() => {
+        const map = new Map();
+        const setInnerHTML = debounce(() => {
+          map.forEach((target, src) => target.innerHTML = `<img class="d-block lazy-img" src="${src}" /><div class="action d-none p-absolute t-0-r-0-b-0-l-0 d-flex-column-center"><button class="open" data-path="${src}">Open</button></div>`);
+        }, 200);
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach(entry => {
+              const src = entry.target.dataset.src;
+              if (entry.isIntersecting) {
+                map.set(src, entry.target);
+              } else {
+                map.delete(src);
+                entry.target.innerHTML = '';
+              }
+            });
+            setInnerHTML();
+          },
+        );
+
+        document.querySelectorAll(".svg-container").forEach(container => {
+          observer.observe(container);
+        });
+      })()
     </script>
     <% } %>
   </body>
