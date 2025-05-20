@@ -1,4 +1,4 @@
-<div class="margin-bottom-16">
+<div class="section margin-bottom-16" style="display: none">
   <input
     class="input-text bc-transparent outline-none"
     title="<%= path %>"
@@ -8,13 +8,18 @@
   <div class="margin-top-2 container-fluid">
     <ul class="row">
       <%_ files.forEach((e) => { _%>
-      <li class="col-12 col-sm-2 col-xl-1 padding-4">
+      <li
+        class="img-container-li col-12 col-sm-2 col-xl-1 padding-4"
+        style="display: none"
+        data-lisrc="<%= e.path %>"
+      >
         <div
           class="img-container bc-transparent padding-2 d-flex-column-center"
         >
           <div
             class="svg-container w-64-h-64 d-flex-column-center p-relative"
-            data-src="<%= e.uri %>"
+            data-uri="<%= e.uri %>"
+            data-src="<%= e.path %>"
           ></div>
         </div>
         <span class="d-block fs-xx-small ta-right"

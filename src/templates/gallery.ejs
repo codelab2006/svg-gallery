@@ -7,70 +7,69 @@
   </head>
 
   <body>
-    <% if (!sections.length) { %>
-    <p class="padding-2" id="no-results-found">No SVGs found</p>
-    <% } else { %>
     <div id="gallery-container">
-      <div class="fg-1"></div>
-      <input class="d-none" type="radio" id="light-frame" name="image-frame" />
-      <div class="p-relative frame-label-container">
-        <button id="light-frame-label" class="frame-label">Light</button>
-        <div class="flag"></div>
-      </div>
-      <input class="d-none" type="radio" id="dark-frame" name="image-frame" />
-      <div class="p-relative frame-label-container">
-        <button id="dark-frame-label" class="frame-label">Dark</button>
-        <div class="flag"></div>
-      </div>
-      <input class="d-none" type="radio" id="custom-frame" name="image-frame" />
-      <div class="p-relative frame-label-container">
-        <button id="custom-frame-label" class="frame-label">
-          <input type="color" id="picker" />
-        </button>
-        <div class="flag"></div>
-      </div>
-      <div class="fg-1 d-flex-row-end padding-right-4">
-        <div class="fg-1 d-flex-row-end padding-right-16">
-          <label class="padding-right-4" for="show-svg-only"
-            >SVG files only</label
+      <div id="toolbar" class="d-flex w-100 p-sticky-0 padding-4">
+        <input
+          class="fg-1 h-25"
+          placeholder="Filter files here"
+          id="filter"
+          value="<%=filter%>"
+        />
+        <input
+          class="h-25 margin-left-16 margin-right-16"
+          type="color"
+          id="picker"
+          value="<%=customBgColor%>"
+        />
+        <div class="d-flex-row-end h-25">
+          <div class="fg-1 d-flex-row-end margin-right-16">
+            <label class="padding-right-4" for="show-svg-only"
+              >SVG files only</label
+            >
+            <input type="checkbox" id="show-svg-only" name="showSVGOnly"
+            <%=showSVGOnly? 'checked' : '' %> />
+          </div>
+          <button
+            id="refresh"
+            title="Refresh gallery"
+            onclick="refresh(this)"
+            class="d-flex-column-center padding-2"
           >
-          <input type="checkbox" id="show-svg-only" name="showSVGOnly"
-          <%=showSVGOnly? 'checked' : '' %> />
+            <svg
+              class="bi bi-arrow-clockwise"
+              width="1em"
+              height="1em"
+              viewBox="0 0 16 16"
+              fill="currentColor"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M3.17 6.706a5 5 0 017.103-3.16.5.5 0 10.454-.892A6 6 0 1013.455 5.5a.5.5 0 00-.91.417 5 5 0 11-9.375.789z"
+                clip-rule="evenodd"
+              />
+              <path
+                fill-rule="evenodd"
+                d="M8.147.146a.5.5 0 01.707 0l2.5 2.5a.5.5 0 010 .708l-2.5 2.5a.5.5 0 11-.707-.708L10.293 3 8.147.854a.5.5 0 010-.708z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </button>
         </div>
-        <button
-          id="refresh"
-          title="Refresh gallery"
-          onclick="refresh(this)"
-          class="d-flex-column-center padding-2"
-        >
-          <svg
-            class="bi bi-arrow-clockwise"
-            width="1em"
-            height="1em"
-            viewBox="0 0 16 16"
-            fill="currentColor"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M3.17 6.706a5 5 0 017.103-3.16.5.5 0 10.454-.892A6 6 0 1013.455 5.5a.5.5 0 00-.91.417 5 5 0 11-9.375.789z"
-              clip-rule="evenodd"
-            />
-            <path
-              fill-rule="evenodd"
-              d="M8.147.146a.5.5 0 01.707 0l2.5 2.5a.5.5 0 010 .708l-2.5 2.5a.5.5 0 11-.707-.708L10.293 3 8.147.854a.5.5 0 010-.708z"
-              clip-rule="evenodd"
-            />
-          </svg>
-        </button>
       </div>
+      <% if (!sections.length) { %>
+      <p class="padding-2" id="no-results-found">No Images found</p>
+      <% } else { %>
       <ul class="gallery">
         <%_ sections.forEach((e)=> { _%>
         <li><%- e %></li>
         <%_ }) _%>
       </ul>
+      <% } %>
     </div>
+    <script src="<%= bundleSrc %>"></script>
     <script>
+      const vscode = acquireVsCodeApi();
       function debounce(func, delay) {
         let timer = null;
         return function (...args) {
@@ -80,49 +79,23 @@
           }, delay);
         };
       }
-
-      const vscode = acquireVsCodeApi();
-      const lightFrameId = "#light-frame";
-      const darkFrameId = "#dark-frame";
-      const customFrameId = "#custom-frame";
-      const customBgColor = <%- JSON.stringify(customBgColor) %>;
-
-      const picker = document.getElementById("picker");
-      picker.value = customBgColor;
-      picker.addEventListener("input", (event) => {
-        debouncedThemeCallback(customFrameId, event.target.value);
-      });
+      const updateBgColor = debounce((bgColor) => {
+        const cs = document.querySelectorAll(".img-container");
+        cs.forEach((e) => (e.style.backgroundColor = bgColor));
+        vscode.postMessage({
+          command: "SAVE_CUSTOM_BG_COLOR_CONFIG",
+          args: { value: bgColor },
+        });
+      }, 200);
+      updateBgColor(<%- JSON.stringify(customBgColor) %>);
+      document
+        .getElementById("picker")
+        .addEventListener("input", (event) =>
+          updateBgColor(event.target.value)
+        );
 
       const refresh = () => {
         vscode.postMessage({ command: "REFRESH" });
-      };
-
-      const themeCallback = (inputId, bgColor) => {
-        document.querySelector(inputId).click();
-        vscode.setState({ frameId: inputId, bgColor });
-
-        const cs = document.querySelectorAll(".img-container");
-        cs.forEach((e) => {
-          const style = e.style;
-          if (bgColor !== undefined) {
-            style.backgroundColor = bgColor;
-            vscode.postMessage({
-              command: "SAVE_CUSTOM_BG_COLOR_CONFIG",
-              args: { value: bgColor },
-            });
-          }
-          else style.backgroundColor = "";
-        });
-      };
-      const debouncedThemeCallback = debounce((inputId, bgColor) => themeCallback(inputId, bgColor), 200);
-      document.querySelector("#light-frame-label").onclick = () => {
-        themeCallback(lightFrameId);
-      };
-      document.querySelector("#dark-frame-label").onclick = () => {
-        themeCallback(darkFrameId);
-      };
-      document.querySelector("#custom-frame-label").onclick = () => {
-        themeCallback(customFrameId, vscode.getState().bgColor || picker.value);
       };
       document.querySelector("#gallery-container").onclick = ({
         target: {
@@ -134,15 +107,6 @@
         }
       };
 
-      const { frameId, bgColor } = vscode.getState() || {};
-
-      if (frameId) {
-        if (bgColor !== undefined) picker.value = bgColor;
-        themeCallback(frameId, bgColor);
-      } else {
-        themeCallback(lightFrameId);
-      }
-
       const showSVGOnly = document.querySelector("#show-svg-only");
       showSVGOnly.addEventListener("change", (event) => {
         vscode.postMessage({
@@ -153,29 +117,58 @@
 
       (() => {
         const map = new Map();
-        const setInnerHTML = debounce(() => {
-          map.forEach((target, src) => target.innerHTML = `<img class="d-block lazy-img" src="${src}" /><div class="action d-none p-absolute t-0-r-0-b-0-l-0 d-flex-column-center"><button class="open" data-path="${src}">Open</button></div>`);
+        const debouncedSetInnerHTML = debounce(() => {
+          map.forEach(
+            (target, src) => {
+              target.innerHTML = `<img class="d-block lazy-img" src="${target.dataset.uri}" /><div class="action d-none p-absolute t-0-r-0-b-0-l-0 d-flex-column-center"><button class="open" data-path="${src}">Open</button></div>`;
+            }
+          );
         }, 200);
-        const observer = new IntersectionObserver(
-          (entries) => {
-            entries.forEach(entry => {
-              const src = entry.target.dataset.src;
-              if (entry.isIntersecting) {
-                map.set(src, entry.target);
-              } else {
-                map.delete(src);
-                entry.target.innerHTML = '';
-              }
-            });
-            setInnerHTML();
-          },
-        );
-
-        document.querySelectorAll(".svg-container").forEach(container => {
-          observer.observe(container);
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            const src = entry.target.dataset.src;
+            if (entry.isIntersecting) {
+              map.set(src, entry.target);
+            } else {
+              map.delete(src);
+              entry.target.innerHTML = "";
+            }
+          });
+          debouncedSetInnerHTML();
         });
-      })()
+
+        const updateFilter = (filter) => {
+          const isMatch = filter && ((value) => (value || "").toUpperCase().includes(filter.toUpperCase())); // window.pm(filter);
+          map.clear();
+          document.querySelectorAll(".svg-container").forEach(container => container.innerHTML = "");
+          document.querySelectorAll(".svg-container").forEach((container) => observer.unobserve(container));
+          let items = document.querySelectorAll(".img-container-li");
+          items.forEach(item => item.style.display = 'none');
+          const sections = document.querySelectorAll(".section");
+          sections.forEach(section => section.style.display = 'none');
+
+          items = [...items].filter((item) => filter === '' || isMatch(item.dataset.lisrc));
+          items.forEach(item => item.style.display = 'list-item');
+          sections.forEach(section => {
+            if ([...section.querySelectorAll('li')].filter(item => item.style.display === 'list-item').length)
+              section.style.display = 'block';
+          });
+
+          vscode.postMessage({
+            command: "SAVE_FILTER_CONFIG",
+            args: { value: filter },
+          });
+
+          document.querySelectorAll(".svg-container").forEach((container) => observer.observe(container));
+        };
+
+        const debouncedUpdateFilter = debounce((filter) => updateFilter(filter), 300);
+        document
+          .getElementById("filter")
+          .addEventListener('input', (event) => debouncedUpdateFilter(event.target.value));
+
+        updateFilter(document.getElementById("filter").value);
+      })();
     </script>
-    <% } %>
   </body>
 </html>

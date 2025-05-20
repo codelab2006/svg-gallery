@@ -14,6 +14,12 @@ View SVG images in gallery.
 
 ## Change Log
 
+### 3.0.0
+
+- Use custom color component instead of theme buttons.
+- Add File Filter.
+- Optimize performance P4.
+
 ### 2.5.2
 
 - Optimize performance P3.

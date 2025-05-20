@@ -1,23 +1,19 @@
 import * as vscode from "vscode";
-import { parse, extname, join, basename } from "path";
+import { parse, extname, dirname } from "path";
 import { Dirent, statSync, Stats } from "fs";
-import { readdir } from "fs/promises";
+import * as fg from "fast-glob";
 
 import Gallery from "./Gallery";
-import {
-  EXT_SET,
-  EXCLUDE,
-  VIEW_TYPE,
-  TEXT_MULTIPLE_FILES,
-  SVG_EXT,
-} from "./constant";
+import { EXT_SET, VIEW_TYPE, TEXT_MULTIPLE_FILES, SVG_EXT } from "./constant";
 
 import GALLERY_TPL from "./templates/gallery.ejs";
 
 import { nanoid } from "nanoid";
+import { Pattern } from "fast-glob";
 
 export const SHOW_SVG_ONLY = "showSVGOnly";
 export const CUSTOM_BG_COLOR = "customBgColor";
+export const FILTER = "filter";
 
 abstract class AbstractGallery {
   constructor(
@@ -60,19 +56,26 @@ abstract class AbstractGallery {
               case "OPEN_FILE":
                 const { path: filePath }: { path: string } = args;
                 if (filePath) {
-                  vscode.window
-                    .showTextDocument(vscode.Uri.file(filePath))
-                    .then(
-                      () => {},
-                      () => {
-                        vscode.window.showErrorMessage(
-                          "Oops! Unable to open the file."
-                        );
-                        if (webViewPanel) {
-                          this.refreshWebview(webViewPanel);
+                  if (extname(filePath).toLowerCase() === SVG_EXT) {
+                    vscode.window
+                      .showTextDocument(vscode.Uri.file(filePath))
+                      .then(
+                        () => {},
+                        () => {
+                          vscode.window.showErrorMessage(
+                            "Oops! Unable to open the file."
+                          );
+                          if (webViewPanel) {
+                            this.refreshWebview(webViewPanel);
+                          }
                         }
-                      }
+                      );
+                  } else {
+                    vscode.commands.executeCommand(
+                      "vscode.open",
+                      vscode.Uri.file(filePath)
                     );
+                  }
                 }
                 return;
               case "REFRESH":
@@ -81,9 +84,13 @@ abstract class AbstractGallery {
                   vscode.window.setStatusBarMessage("Refreshing...", 1000);
                 }
                 return;
+              case "SAVE_FILTER_CONFIG":
+                const { value: filter }: { value: string } = args;
+                this.context.workspaceState.update(FILTER, filter);
+                return;
               case "SAVE_CUSTOM_BG_COLOR_CONFIG":
-                const { value }: { value: boolean } = args;
-                this.context.workspaceState.update(CUSTOM_BG_COLOR, value);
+                const { value: bgColor }: { value: boolean } = args;
+                this.context.workspaceState.update(CUSTOM_BG_COLOR, bgColor);
                 return;
               case "SAVE_SHOW_SVG_ONLY_CONFIG":
                 if (webViewPanel) {
@@ -106,7 +113,14 @@ abstract class AbstractGallery {
       VIEW_TYPE,
       title,
       vscode.ViewColumn.One,
-      { enableScripts: true, enableFindWidget: true }
+      {
+        enableScripts: true,
+        enableFindWidget: false,
+        localResourceRoots: [
+          ...(vscode.workspace.workspaceFolders?.map((f) => f.uri) || []),
+          vscode.Uri.joinPath(this.context.extensionUri, "media"),
+        ],
+      }
     );
   }
 
@@ -179,49 +193,28 @@ class FolderGallery extends AbstractGallery {
   ): Promise<Map<string, string[]>> {
     const result = new Map<string, string[]>();
 
-    if (EXCLUDE.has(basename(path))) {
-      return result;
+    const source: Pattern = this.context.workspaceState.get(SHOW_SVG_ONLY)
+      ? `**/*${SVG_EXT}`
+      : `**/*.{${[...extSet.values()]
+          .map((ext) => ext.replace(".", ""))
+          .join(",")}}`;
+
+    let files = await fg([source, "!**/node_modules/**"], {
+      cwd: path,
+      absolute: true,
+      onlyFiles: true,
+    });
+
+    for (const file of files) {
+      const dir = dirname(file);
+      if (!result.has(dir)) {
+        result.set(dir, []);
+      }
+      result.get(dir)?.push(file);
     }
-
-    let ds: Dirent[];
-    try {
-      ds = await readdir(path, { withFileTypes: true });
-    } catch {
-      return result;
-    }
-
-    let files = this.filterByExt(ds, extSet).map((e) => join(path, e.name));
-
-    if (this.context.workspaceState.get(SHOW_SVG_ONLY)) {
-      files = files.filter((file) => extname(file).toLowerCase() === SVG_EXT);
-    }
-
-    if (files.length) {
-      result.set(path, files);
-    }
-
-    await Promise.all(
-      ds
-        .filter((d) => d.isDirectory())
-        .map(async (d) => {
-          const subResult = await this.findFilesByExtAsync(
-            join(path, d.name),
-            extSet
-          );
-          for (const [subPath, subFiles] of subResult.entries()) {
-            result.set(subPath, subFiles.sort());
-          }
-        })
-    );
 
     return new Map(
       [...result.entries()].sort((a, b) => a[0].localeCompare(b[0]))
-    );
-  }
-
-  private filterByExt(ds: Dirent[], extSet: Set<string>): Dirent[] {
-    return ds.filter(
-      (d) => d.isFile() && extSet.has(extname(d.name).toLowerCase())
     );
   }
 }

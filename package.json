@@ -2,7 +2,7 @@
   "name": "svg-gallery",
   "displayName": "SVG Gallery",
   "description": "View SVG images in gallery",
-  "version": "2.5.2",
+  "version": "3.0.0",
   "publisher": "developer2006",
   "icon": "images/logo.png",
   "engines": {
@@ -57,9 +57,12 @@
   },
   "scripts": {
     "vscode:prepublish": "webpack --mode production",
-    "watch": "webpack --mode development --watch --info-verbosity verbose"
+    "watch": "webpack --mode development --watch --info-verbosity verbose",
+    "rollup": "rollup -c"
   },
   "devDependencies": {
+    "@rollup/plugin-commonjs": "28.0.3",
+    "@rollup/plugin-node-resolve": "15.2.3",
     "@types/node": "20.14.8",
     "@types/vscode": "^1.82.0",
     "@typescript-eslint/eslint-plugin": "^2.26.0",
@@ -68,6 +71,7 @@
     "css-loader": "^3.4.2",
     "eslint": "^6.8.0",
     "raw-loader": "^4.0.0",
+    "rollup": "^4.41.0",
     "style-loader": "^1.1.0",
     "ts-loader": "8.4.0",
     "typescript": "4.8.4",
@@ -75,10 +79,12 @@
     "webpack-cli": "^3.3.0"
   },
   "dependencies": {
-    "ejs": "^3.0.2",
-    "fast-xml-parser": "^3.16.0",
+    "ejs": "3.0.2",
+    "fast-glob": "3.3.3",
+    "fast-xml-parser": "3.16.0",
     "lodash": "4.17.21",
-    "nanoid": "3.3.8"
+    "nanoid": "3.3.8",
+    "picomatch": "^4.0.2"
   },
   "author": "Yongjian Huang",
   "license": "MIT",
